@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}{{ service.name }} — MediReservas{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-sm text-slate-400 mb-6">
+  <a href="{% url 'home' %}" class="hover:text-brand-700 transition">Inicio</a>
+  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+  <a href="{% url 'service_list' %}" class="hover:text-brand-700 transition">Servicios</a>
+  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+  <span class="text-slate-600 font-medium">{{ service.name }}</span>
+</nav>
+
+<!-- Detalle del servicio -->
+<div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-8">
+  <div class="h-2 bg-gradient-to-r from-brand-600 to-teal-500"></div>
+  <div class="p-8">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div class="flex items-start gap-4">
+        <div class="w-14 h-14 rounded-xl bg-brand-50 flex items-center justify-center flex-shrink-0">
+          <svg class="w-7 h-7 text-brand-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-1">{{ service.name }}</h1>
+          <span class="inline-block bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-emerald-100">Disponible para reserva</span>
+        </div>
+      </div>
+      <div class="bg-brand-50 border border-brand-100 rounded-xl px-6 py-4 text-center flex-shrink-0">
+        <p class="text-xs text-brand-500 font-medium mb-0.5">Precio por sesión</p>
+        <p class="text-3xl font-bold text-brand-700">S/ {{ service.price }}</p>
+      </div>
+    </div>
+
+    <p class="text-slate-600 leading-relaxed mt-5 mb-6">{{ service.description }}</p>
+
+    <div class="flex flex-wrap gap-4">
+      <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-4 py-2.5 text-sm">
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="text-slate-500">Duración:</span>
+        <span class="font-semibold text-slate-700">{{ service.duration_minutes }} minutos</span>
+      </div>
+      <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-4 py-2.5 text-sm">
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span class="text-slate-500">Capacidad:</span>
+        <span class="font-semibold text-slate-700">{{ service.capacity }} persona(s) por turno</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Disponibilidad -->
+<div class="mb-4 flex items-center justify-between">
+  <div>
+    <h2 class="text-xl font-bold text-slate-800">Disponibilidad próximos 14 días</h2>
+    <p class="text-slate-500 text-sm mt-0.5">Selecciona el día de tu preferencia para agendar tu cita</p>
+  </div>
+</div>
+
+{% if available_days %}
+<div class="space-y-3">
+  {% for day in available_days %}
+  <div class="bg-white rounded-xl border border-slate-100 shadow-sm hover:border-brand-200 hover:shadow-md transition-all p-5">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex items-start gap-3">
+        <div class="w-12 h-12 rounded-xl bg-brand-50 border border-brand-100 flex flex-col items-center justify-center flex-shrink-0">
+          <p class="text-xs text-brand-500 font-medium leading-none">{{ day.date|date:"M" }}</p>
+          <p class="text-xl font-bold text-brand-700 leading-tight">{{ day.date|date:"j" }}</p>
+        </div>
+        <div>
+          <p class="font-semibold text-slate-800 capitalize">{{ day.date|date:"l, j \d\e F Y" }}</p>
+          <div class="flex flex-wrap gap-2 mt-2">
+            {% for slot in day.slots %}
+            <span class="inline-flex items-center gap-1 bg-teal-50 text-teal-700 text-xs font-semibold px-2.5 py-1 rounded-lg border border-teal-100">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              {{ slot.start_time|time:"H:i" }} – {{ slot.end_time|time:"H:i" }}
+            </span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <a href="{% url 'booking_create' service.pk %}?date={{ day.date|date:'Y-m-d' }}"
+         class="flex-shrink-0 flex items-center justify-center gap-2 bg-brand-700 hover:bg-brand-600 text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition whitespace-nowrap">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Reservar este día
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="bg-white rounded-2xl border border-slate-100 shadow-sm text-center py-20">
+  <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+    <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+  </div>
+  <h3 class="text-base font-semibold text-slate-600 mb-1">Sin disponibilidad próxima</h3>
+  <p class="text-slate-400 text-sm">No hay horarios disponibles en los próximos 14 días.<br>Por favor contáctenos para coordinar una cita.</p>
+</div>
+{% endif %}
+
+{% endblock %}

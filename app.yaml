@@ -1,0 +1,18 @@
+runtime: python312
+
+entrypoint: gunicorn -b :$PORT config.wsgi:application
+
+env_variables:
+  DJANGO_SETTINGS_MODULE: config.settings.production
+  DJANGO_SECRET_KEY: "17aa954e2b488007489a395a3a8130405ba32e3093fad142d8b6af9a72705d6d556b0b0a28a2dce17f79e74089e00e5642fd"
+  DB_NAME: postgres
+  DB_USER: postgres
+  DB_PASSWORD: "x7p2uOwigMj0Ba6r"
+  DB_HOST: db.zznyzoshdzjipfglyomo.supabase.co
+  DB_PORT: "5432"
+
+handlers:
+  - url: /static
+    static_dir: staticfiles/
+  - url: /.*
+    script: auto
